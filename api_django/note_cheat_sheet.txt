@@ -1,0 +1,163 @@
+1. Configurer le projet django + configurer les vues de django rest api
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api_auth/', include('rest_framework.urls')),
+    path('monapi/', include('monapi.urls')),
+    path('service_client/', include('service_client.urls')),
+]
+2. Créer l'application nécessaire + models.py
+from django.db import models
+
+# Create your models here.
+
+class Client(models.Model):
+    """
+    Model representing a client.
+    """
+
+    id = models.AutoField(primary_key=True, verbose_name="ID")
+    
+    genre = models.CharField(
+        max_length=10,
+        choices=[
+            ('M', 'Monsieur'),
+            ('Mme', 'Madame'),
+            ('Mlle', 'Mademoiselle')
+        ],
+        verbose_name="Genre"
+    )
+
+    nom = models.CharField(max_length=50, verbose_name="Nom")
+    prenom = models.CharField(max_length=50, verbose_name="Prénom")
+    email = models.EmailField(max_length=254, verbose_name="Email")
+    telephone = models.CharField(max_length=15, verbose_name="Téléphone", blank=True, null=True)
+    mot_de_passe = models.CharField(
+        max_length=128,
+        verbose_name="Mot de passe",
+        help_text="Le mot de passe doit contenir au moins 8 caractères."
+    )
+    date_creation = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Date de création"
+    )
+
+
+    def __str__(self):
+        """
+        String representation of the Client model.
+        Returns the full name of the client.
+        """
+        return f"{self.prenom} {self.nom}"
+    
+    def __repr__(self):
+        return super().__repr__()
+
+3. Créer un fichier urls.py et serializer.py
+class ClientSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Commentaire model.
+    Converts model instances to JSON and vice versa.
+    """
+
+    class Meta:
+        model = Client
+        fields = ['id', 'genre', 'nom', 'prenom', 'email', 'telephone', 'mot_de_passe', 'date_creation']
+
+
+4. Créer les vues pour les associer serializer (en fonction des actions get put delete post)
+from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Client
+from .serializer import ClientSerializer
+from rest_framework import permissions
+
+
+class ClientViewAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        """
+        Handle GET requests to retrieve all comments.
+        Returns a list of comments in JSON format.
+        """
+        commentaires = Client.objects.all()
+        id = request.query_params.get('id', None)
+        serializer = ClientSerializer(commentaires, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, *args, **kwargs):
+        data = {
+            "genre": request.data.get("genre"),
+            "nom": request.data.get("nom"),
+            "prenom": request.data.get("prenom"),
+            "email": request.data.get("email"),
+            "telephone": request.data.get("telephone"),
+            "mot_de_passe": request.data.get("mot_de_passe"),
+        }
+
+        serializer = ClientSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ClientViewAPIDetail(APIView):
+
+    def get(self, request, pk, *args, **kwargs):
+        """
+        Handle GET requests to retrieve a specific comment by its ID.
+        Returns the comment in JSON format.
+        """
+        commentaire = Client.objects.get(pk=pk)
+        if not Client:
+            return Response({"error": "Comment not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ClientSerializer(commentaire)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self, request, pk, *args, **kwargs):
+        """
+        Handle DELETE requests to delete a specific comment by its ID.
+        Returns a success message if the comment is deleted.
+        """
+        commentaire = Client.objects.get(pk=pk)
+        if not commentaire:
+            return Response({"error": "Comment not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        commentaire.delete()
+        return Response({"message": "Comment deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+    def put(self, request, pk, *args, **kwargs):
+        """
+        Handle PUT requests to update a specific comment by its ID.
+        Returns the updated comment in JSON format.
+        """
+        commentaire = Client.objects.get(pk=pk)
+        if not commentaire:
+            return Response({"error": "Comment not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        data = {
+            "genre": request.data.get("genre", commentaire.genre),
+            "nom": request.data.get("nom", commentaire.nom),
+            "prenom": request.data.get("prenom", commentaire.prenom),
+            "email": request.data.get("email", commentaire.email),
+            "telephone": request.data.get("telephone", commentaire.telephone),
+            "mot_de_passe": request.data.get("mot_de_passe", commentaire.mot_de_passe),
+        }
+
+        serializer = ClientSerializer(commentaire, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+5. Ajouter l'authentification des vues
+from rest_framework import permissions
+
+Class X:
+	permission_classes = [permissions.IsAuthenticated]

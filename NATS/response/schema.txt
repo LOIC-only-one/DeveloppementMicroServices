@@ -1,0 +1,32 @@
+Fiche de révision : Bibliothèque NATS
+
+1. Qu'est-ce que NATS ?
+    - NATS est un système de messagerie léger, rapide et open source, utilisé pour la communication asynchrone entre services (pub/sub, requête/réponse).
+
+2. Concepts clés :
+    - Sujet (Subject) : Canal de communication nommé.
+    - Publisher : Envoie des messages sur un sujet.
+    - Subscriber : Écoute et reçoit les messages d’un sujet public
+    - Inbox : Sujet temporaire pour recevoir des réponses privé.
+    - msg.respond() : Méthode pour répondre à une requête.
+
+3. Modèles de communication :
+    - Pub/Sub : Un ou plusieurs abonnés reçoivent les messages publiés sur un sujet.
+    - Request/Reply : Un client envoie une requête avec un champ reply, le serveur répond sur ce sujet.
+
+4. Exemples de code (pseudo-code) :
+    - Publier : nats.publish("sujet", "message")
+    - S’abonner : nats.subscribe("sujet", callback)
+    - Requête/Réponse :
+      - Client : nats.request("sujet", "message", callback)
+      - Serveur : nats.subscribe("sujet", (msg) => msg.respond("réponse"))
+
+5. Avantages :
+    - Faible latence, haute performance.
+    - Facile à intégrer dans des microservices.
+    - Supporte la scalabilité et la tolérance aux pannes.
+
+Résumé :
+- NATS facilite la communication asynchrone entre applications via des sujets.
+- Supporte pub/sub et request/reply.
+- Utilisé pour des architectures distribuées et microservices.
