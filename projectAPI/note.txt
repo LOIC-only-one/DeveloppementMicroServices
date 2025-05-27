@@ -1,0 +1,30 @@
+Poetry : un gestionnaire de dépendances Python moderne et efficace
+
+Poetry est un outil qui facilite la gestion des dépendances et l'empaquetage des projets Python. Il permet de créer, gérer et publier des projets de manière simple et organisée.
+
+Principales commandes Poetry :
+
+1. Initialiser un projet Poetry :
+    poetry init
+
+2. Ajouter une dépendance au projet :
+    poetry add <nom_de_la_dependance>
+
+3. Ajouter des dépendances de développement (outils d'analyse et de formatage) :
+    poetry add --group dev mypy black ruff
+    # mypy : vérification des types
+    # black : formatage automatique du code
+    # ruff : analyse statique et linting
+    # fastapi
+    # uvicorn
+
+4. Lancer l'application avec Uvicorn :
+    poetry run uvicorn script:app --host 0.0.0.0 --port 8000 --reload
+
+Avantages de Poetry :
+- Gestion claire des dépendances (fichier pyproject.toml)
+- Isolation des environnements virtuels
+- Publication facilitée sur PyPI
+- Outils intégrés pour le développement et la qualité du code
+
+Pour plus d'informations, consultez la documentation officielle : https://python-poetry.org/docs/

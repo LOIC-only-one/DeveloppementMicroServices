@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mongo:latest
+    container_name: todo_app_db
+    restart: always
+    ports:
+      - "27017:27017"
+    env_file:
+      - .env
+    volumes:
+      - type: volume
+        source: todo_app_db_data
+        target: /data/db
+
+volumes:
+  todo_app_db_data:

@@ -1,0 +1,148 @@
+1. Création de l'infrastructure avec Docker
+On setup le docker compose
+services:
+  db:
+    image: mongo:latest
+    container_name: todo_app_db
+    restart: always
+    ports:
+      - "27017:27017"
+    env_file:
+      - .env
+    volumes:
+      - type: volume
+        source: todo_app_db_data
+        target: /data/db
+
+volumes:
+  todo_app_db_data:
+
+
+2. On run le docker compose
+
+3. On init le projet poetry avec les bonnes depandances
+poetry init
+poetry add dependances
+
+
+4. On créer l'api et configure les parametres par defaut
+from fastapi import FastAPI, HTTPException, Path
+from motor.motor_asyncio import AsyncIOMotorClient
+import datetime
+from pydantic import BaseModel, Field
+from typing import List, Optional
+from bson import ObjectId
+
+# Modèle de base pour une tâche Todo
+class Todo(BaseModel):
+    title: str
+    completed: bool = False
+
+# Modèle pour retourner l'identifiant d'une tâche
+class TodoId(BaseModel):
+    id: str
+
+# Modèle complet d'une tâche avec dates de création et de mise à jour
+class TodoRecord(TodoId, Todo):
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+
+# Connexion à la base de données MongoDB
+db_client = AsyncIOMotorClient("mongodb://root:mySecurePassword1@localhost:27017")
+
+db = db_client.todo_app
+
+# Création de l'application FastAPI
+app = FastAPI(
+    title="Todo App API",
+    description="Une API simple de gestion de tâches avec FastAPI et MongoDB",
+    version="1.0.0",
+    docs_url="/",
+)
+
+# Point d'entrée pour lancer le serveur en mode développement
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
+# Route pour créer une nouvelle tâche
+@app.post("/todos", response_model=TodoId)
+async def create_todo(payload: Todo):
+    """
+    Crée une nouvelle tâche Todo dans la base de données.
+    """
+    now = datetime.datetime.utcnow()
+    # Insertion de la tâche dans la collection 'todos'
+    insert_result = await db.todos.insert_one(
+        {
+            "title": payload.title,
+            "completed": payload.completed,
+            "created_at": now,
+            "updated_at": now
+        }
+    )
+    # Retourne l'identifiant de la tâche créée
+    return TodoId(id=str(insert_result.inserted_id))
+
+5. On créer le modele qui va acceuillir l'app
+# Modèle de base pour une tâche Todo
+class Todo(BaseModel):
+    title: str
+    completed: bool = False
+
+# Modèle pour retourner l'identifiant d'une tâche
+class TodoId(BaseModel):
+    id: str
+
+# Modèle complet d'une tâche avec dates de création et de mise à jour
+class TodoRecord(TodoId, Todo):
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+
+6. On execute uvicorn pour pouvoir lancer l'application apres refresh du contenu du code
+# Point d'entrée pour lancer le serveur en mode développement
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
+
+NOTA : mongod --noauth
+db_client = AsyncIOMotorClient("mongodb://admin:secret@localhost:27017")
+
+
+
+
+
+
+
+Promener dans un environnements mongodb
+
+mongosh "mongodb://user:password@localhost:27017"
+show dbs
+use nom_de_la_db
+use todo_app
+show collections
+db.nom_collection.find()
+
+
+test> show dbs
+admin     100.00 KiB
+config     60.00 KiB
+local      72.00 KiB
+todo_app   40.00 KiB
+test> use todo_app
+switched to db todo_app
+todo_app> show collections
+todos
+todo_app> db.nom_collection.find()
+
+todo_app> db.todos.find()
+[
+  {
+    _id: ObjectId('6835ada41b31a07140473d68'),
+    title: 'testt',
+    completed: false,
+    created_at: ISODate('2025-05-27T12:18:44.192Z'),     
+    updated_at: ISODate('2025-05-27T12:18:44.192Z')      
+  }
+]
