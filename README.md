@@ -10,3 +10,11 @@ Bienvenue dans ce cours d’introduction aux microservices ! L’architecture 
 - 🌐 **Django** : Framework web Python pour créer des applications web robustes et évolutives.
 - 🔗 **Django REST Framework** : Extension de Django pour construire facilement des API RESTful et faciliter la création de services web.
 
+
+
+
+
+### Fonctions decouvertes utiles :
+- poetry : gestionnaire de dépendances pour Python, facilitant la gestion des bibliothèques et des versions.
+- from dotenv import load_dotenv : permet de charger les variables d'environnement à partir d'un fichier `.env`, facilitant la configuration des applications.
+

@@ -8,8 +8,14 @@ from typing import List
 from bson import ObjectId
 from models import Todo, TodoId, TodoRecord
 
-# Connexion à la base de données MongoDB
-db_client = AsyncIOMotorClient("mongodb://root:mySecurePassword1@localhost:27017")
+### Utile de fournir les variables d'environnement pour la connexion à la base de données
+from dotenv import load_dotenv
+import os
+
+# Connexion à la base de données MongoDB avec un fichier .env
+load_dotenv()
+MONGO_URI = os.getenv("MONGO_URI")
+db_client = AsyncIOMotorClient(MONGO_URI)
 
 db = db_client.todo_app
 
@@ -21,13 +27,7 @@ app = FastAPI(
     docs_url="/",
 )
 
-# Point d'entrée pour lancer le serveur en mode développement
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-
-@app.get("/todos", response_model=List[TodoRecord])
+app.get("/todos", response_model=List[TodoRecord])
 async def get_todos():
     """
     Récupère toutes les tâches Todo de la base de données.
@@ -45,7 +45,7 @@ async def get_todos():
 
 
 @app.get("/todos/{todo_id}", response_model=TodoRecord)
-async def get_todo(todo_id: str = Path(..., description="L'identifiant de la tâche Todo à récupérer")):
+async def get_todo(todo_id):
     """
     Récupère une tâche Todo spécifique par son identifiant.
     """
@@ -85,10 +85,7 @@ async def create_todo(payload: Todo):
 
 
 @app.put("/todos/{todo_id}", response_model=TodoRecord)
-async def update_todo(
-    payload: Todo,
-    todo_id: str = Path(..., description="L'identifiant de la tâche Todo à mettre à jour")
-):
+async def update_todo(payload, todo_id):
     """
     Met à jour une tâche Todo existante.
     """
@@ -119,7 +116,7 @@ async def update_todo(
 
 
 @app.delete("/todos/{todo_id}", response_model=TodoId)
-async def delete_todo(todo_id: str = Path(..., description="L'identifiant de la tâche Todo à supprimer")):
+async def delete_todo(todo_id):
     """
     Supprime une tâche Todo de la base de données.
     """
@@ -129,3 +126,9 @@ async def delete_todo(todo_id: str = Path(..., description="L'identifiant de la 
         raise HTTPException(status_code=404, detail="Tâche non trouvée")
     
     return TodoId(id=todo_id)
+
+# Point d'entrée pour lancer le serveur en mode développement
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

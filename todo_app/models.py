@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 import datetime
 
 # Modèle de base pour une tâche Todo
@@ -10,7 +10,7 @@ class Todo(BaseModel):
 class TodoId(BaseModel):
     id: str
 
-# Modèle complet d'une tâche avec dates de création et de mise à jour
+# Modèle complet d'une tâche avec dates de création et de mise à jour il créer la structure de l'objet final heritant de TodoId et Todo
 class TodoRecord(TodoId, Todo):
     created_at: datetime.datetime
     updated_at: datetime.datetime
