@@ -1,5 +1,5 @@
 [project]
-name = "todo"
+name = "todo-app"
 version = "0.1.0"
 description = ""
 authors = [
@@ -8,8 +8,6 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "python-dotenv (>=1.1.0,<2.0.0)",
-    "motor (>=3.7.1,<4.0.0)"
 ]
 
 

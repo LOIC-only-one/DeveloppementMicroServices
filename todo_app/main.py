@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Path
+from fastapi import FastAPI, HTTPException
 ## motor permet d'interagir avec MongoDB de manière asynchrone
 from motor.motor_asyncio import AsyncIOMotorClient
 import datetime
@@ -27,7 +27,7 @@ app = FastAPI(
     docs_url="/",
 )
 
-app.get("/todos", response_model=List[TodoRecord])
+@app.get("/todos", response_model=List[TodoRecord])
 async def get_todos():
     """
     Récupère toutes les tâches Todo de la base de données.
@@ -69,7 +69,7 @@ async def create_todo(payload: Todo):
     """
     Crée une nouvelle tâche Todo dans la base de données.
     """
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.timezone.utc)
     # Insertion de la tâche dans la collection 'todos'
     insert_result = await db.todos.insert_one(
         {
@@ -85,11 +85,11 @@ async def create_todo(payload: Todo):
 
 
 @app.put("/todos/{todo_id}", response_model=TodoRecord)
-async def update_todo(payload, todo_id):
+async def update_todo(todo_id: str, payload: Todo):
     """
     Met à jour une tâche Todo existante.
     """
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.timezone.utc)
     update_result = await db.todos.update_one(
         {"_id": ObjectId(todo_id)},
         {
