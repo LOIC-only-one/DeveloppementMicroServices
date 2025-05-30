@@ -23,6 +23,10 @@ volumes:
 3. On init le projet poetry avec les bonnes depandances
 poetry init
 poetry add dependances
+poetry shell
+poetry run script.py
+poetry update package
+
 
 
 4. On créer l'api et configure les parametres par defaut

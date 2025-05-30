@@ -127,7 +127,7 @@ async def delete_todo(todo_id):
     
     return TodoId(id=todo_id)
 
-# Point d'entrée pour lancer le serveur en mode développement
+# Point d'entrée pour lancer le serveur en mode développement uvicorn
 if __name__ == "__main__":
     import uvicorn
 
