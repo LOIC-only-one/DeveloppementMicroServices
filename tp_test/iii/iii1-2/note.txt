@@ -1,7 +1,7 @@
-# Pour ne pas tenir compte de la ville dans le sujet de l'abonnement,
-# utilisez un wildcard (*) à la place du nom de la ville.
-# Exemple : "bonjour.*.matin" va recevoir tous les messages du matin,
-# quelle que soit la ville.
+Pour ne pas tenir compte de la ville dans le sujet de l'abonnement,
+il faut un wildcard (*) à la place du nom de la ville.
+Exemple : "bonjour.*.matin" va recevoir tous les messages du matin,
+quelle que soit la ville.
 
-# Remplacer la ville par un wildcard *
+Remplacer la ville par un wildcard *
 await nc.subscribe("bonjour.*.matin", cb=traitement)
