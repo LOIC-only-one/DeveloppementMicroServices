@@ -18,7 +18,7 @@ async def main():
 
     await nc.subscribe("argent.*.montant", cb=verifier_montant)
     print("service montant actif")
-    await asyncio.Event().wait()
+    await asyncio.Event().wait() ## boucle infiinie
 
 if __name__ == "__main__":
     asyncio.run(main())
