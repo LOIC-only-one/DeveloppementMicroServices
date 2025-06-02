@@ -19,7 +19,7 @@ https://gchq.github.io/CyberChef/ => URLENCODE
 curl -X GET "http://127.0.0.1:8000/monapi/api/albums/?titre=Smell%20Like%20Teen%20Spirit"
 
 3. Indiquer comment modifier le sujet de l'abonnement en ne tenant pas compte du nom de la ville
-Pour ne pas tenir compte de la ville dans le sujet de l'abonnement, utilisez un wildcard (*) à la place du nom de la ville.
+Pour ne pas tenir compte de la ville dans le sujet de l'abonnement, il faut un wildcard (*) à la place du nom de la ville.
 Exemple : "bonjour.*.matin" va recevoir tous les messages du matin, quelle que soit la ville.
 
 await nc.subscribe("bonjour.*.matin", cb=traitement)
