@@ -1,0 +1,24 @@
+- Inserer un nouvel album
+
+curl -X POST http://127.0.0.1:8000/monapi/api/albums/ -H "Content-Type: application/json" -d "{\"titre\":\"Music1\",\"artiste\":\"Auteur1\",\"date_production\":\"2005-01-01\",\"nombre_pistes\":10,\"duree_minutes\":40}"
+
+curl -X POST http://127.0.0.1:8000/monapi/api/albums/ -H "Content-Type: application/json" -d "{\"titre\":\"Music2\",\"artiste\":\"Auteur1\",\"date_production\":\"2005-01-01\",\"nombre_pistes\":8,\"duree_minutes\":35}"
+
+curl -X POST http://127.0.0.1:8000/monapi/api/albums/ -H "Content-Type: application/json" -d "{\"titre\":\"Smell Like Teen Spirit\",\"artiste\":\"Auteur3\",\"date_production\":\"2005-01-01\",\"nombre_pistes\":12,\"duree_minutes\":42}"
+
+
+- Recuperer l'album avec un id :
+
+curl -X GET http://127.0.0.1:8000/monapi/api/albums/5/
+
+C:\Users\id00l>curl -X GET http://127.0.0.1:8000/monapi/api/albums/5/
+{"id":5,"titre":"Music1","artiste":"Auteur1","date_production":"2005-01-01","nombre_pistes":10,"duree_minutes":40}
+C:\Users\id00l>
+
+- Recuperer Smell like teen Spirit
+
+NOTA : Il a fallut ajouter une vue
+
+https://gchq.github.io/CyberChef/ => URLENCODE
+
+curl -X GET "http://127.0.0.1:8000/monapi/api/albums/?titre=Smell%20Like%20Teen%20Spirit"

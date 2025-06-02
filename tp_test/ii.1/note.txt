@@ -1,0 +1,2 @@
+Vous pouvez acceder à l'api http://127.0.0.1:8000/monapi/api/albums/
+
